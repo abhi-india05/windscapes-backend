@@ -8,7 +8,7 @@ class UserTable(Base):
     user_username = Column(String, unique=True, nullable=False, index=True)
     user_password = Column(String, nullable=False)
 
-    # ✅ Only admin or employee allowed
+    # Only admin or employee allowed
     role = Column(String, nullable=False)
 
     created_at = Column(

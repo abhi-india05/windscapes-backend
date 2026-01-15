@@ -171,17 +171,17 @@ def remove_product_from_order_service(db: Session, order_id: str, payload: Order
     order_total = _refresh_order_total(db, order_id)
     return order_total
 
-    def update_order_basic_details_service(db: Session, order_id: str, client_name: str | None = None):
-        order = db.query(OrderTable).filter(OrderTable.order_id == order_id).first()
-        if not order:
+def update_order_basic_details_service(db: Session, order_id: str, client_name: str | None = None):
+    order = db.query(OrderTable).filter(OrderTable.order_id == order_id).first()
+    if not order:
         raise HTTPException(status_code=404, detail="Order not found")
 
-        if order.status != EDITABLE_STATUS:
-            raise HTTPException(status_code=400, detail="Order can be updated only when status is CREATED")
-        if client_name is not None:
-            order.client_name = client_name.strip()
+    if order.status != EDITABLE_STATUS:
+        raise HTTPException(status_code=400, detail="Order can be updated only when status is CREATED")
+    if client_name is not None:
+        order.client_name = client_name.strip()
 
-        order.updated_at = datetime.utcnow()
-        db.commit()
-        db.refresh(order)
-        return order
+    order.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(order)
+    return order

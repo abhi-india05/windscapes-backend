@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.deps import get_db, get_current_user, require_admin
 from app.core.security import hash_password, verify_password, create_access_token
 from app.models.user import UserTable
-from app.schemas.auth_schema import LoginRequest, TokenResponse
+from app.schemas.auth_schema import LoginRequest, TokenResponse, RegisterRequest
 
 router = APIRouter()
 
@@ -26,20 +26,29 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
         user_id=user.user_id
     )
 
+@router.post("/register")
+def register_user(
+    payload: RegisterRequest,
+    db: Session = Depends(get_db),
+    admin_user: UserTable = Depends(require_admin)
+):
+    if payload.role not in ["admin", "employee"]:
+        raise HTTPException(status_code=400, detail="Role must be admin or employee")
 
-"""
-@router.get("/me")
-def me(current_user: UserTable = Depends(get_current_user)):
-    return {
-        "user_id": current_user.user_id,
-        "user_username": current_user.user_username,
-        "role": current_user.role,
-        "created_at": current_user.created_at
-    }
+    existing = db.query(UserTable).filter(UserTable.user_username == payload.user_username).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="Username already exists")
 
+    user = UserTable(
+        user_id=payload.user_id,
+        user_username=payload.user_username,
+        user_password=hash_password(payload.user_password),
+        role=payload.role
+    )
 
+    db.add(user)
+    db.commit()
+    db.refresh(user)
 
-@router.get("/admin-only")
-def admin_only(admin_user: UserTable = Depends(require_admin)):
-    return {"message": "Welcome Admin ✅", "admin_id": admin_user.user_id}
-"""
+    return {"message": "User registered successfully ", "user_id": user.user_id, "role": user.role}
+

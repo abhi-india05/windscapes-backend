@@ -127,7 +127,7 @@ def update_order_details(
     )
 
     return {
-        "message": "Order updated ✅",
+        "message": "Order updated ",
         "order_id": order.order_id,
         "client_name": order.client_name,
         "status": order.status,

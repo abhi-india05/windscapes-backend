@@ -50,3 +50,7 @@ class OrderDetailResponse(BaseModel):
     ordered_at: str
     updated_at: str
     items: List[OrderedProductView]
+
+
+class OrderUpdateRequest(BaseModel):
+    client_name: str
