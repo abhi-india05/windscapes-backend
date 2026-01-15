@@ -8,7 +8,6 @@ class RegisterRequest(BaseModel):
     role: str  # admin | employee
 
 class RegisterRequest(BaseModel):
-    user_id: str
     user_username: str
     user_password: str
     role: str  # admin | employee

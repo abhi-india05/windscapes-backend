@@ -17,6 +17,7 @@ from app.schemas.order_schema import (
 )
 
 from app.utils.order_calc import calculate_line_total
+from app.core.id_generator import generate_order_id
 
 
 #ALLOWED_EDIT_STATUSES = {"CREATED", "IN_PROGRESS"}
@@ -42,8 +43,10 @@ def create_order_service(db: Session, payload: OrderCreateRequest) -> OrderTable
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    new_order_id = generate_order_id(db)
+    
     new_order = OrderTable(
-        order_id=str(uuid4()),
+        order_id=new_order_id,
         user_id=payload.user_id,
         client_name=payload.client_name.strip(),
         total_order_amount=0,
