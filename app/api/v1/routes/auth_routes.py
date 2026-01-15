@@ -25,7 +25,7 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
         role=user.role,
         user_id=user.user_id
     )
-
+#for testing only
 @router.post("/register")
 def register_user(
     payload: RegisterRequest,
@@ -52,3 +52,11 @@ def register_user(
 
     return {"message": "User registered successfully ", "user_id": user.user_id, "role": user.role}
 
+@router.get("/me")
+def me(current_user: UserTable = Depends(get_current_user)):
+    return {
+        "user_id": current_user.user_id,
+        "user_username": current_user.user_username,
+        "role": current_user.role,
+        "created_at": current_user.created_at
+    }
