@@ -1,14 +1,11 @@
-from sqlalchemy import Column, String, ForeignKey, Numeric, TIMESTAMP, text
-from sqlalchemy.dialects.postgresql import ENUM
+import enum
+from sqlalchemy import Column, String, ForeignKey, Numeric, TIMESTAMP, text, Enum
 from app.core.database import Base
 
-order_status_enum = ENUM(
-    "CREATED",
-    "IN_PROGRESS",
-    "COMPLETED",
-    name="order_status_enum",
-    create_type=True
-)
+class OrderStatus(str, enum.Enum):
+    CREATED = "CREATED"
+    IN_PROGRESS = "IN_PROGRESS"
+    COMPLETED = "COMPLETED"
 
 class OrderTable(Base):
     __tablename__ = "order_table"
@@ -26,7 +23,11 @@ class OrderTable(Base):
 
     total_order_amount = Column(Numeric(14, 2), nullable=False, default=0)
 
-    status = Column(order_status_enum, nullable=False, server_default="CREATED")
+    status = Column(
+        Enum(OrderStatus, name="order_status_enum", create_type=True, metadata=Base.metadata),
+        nullable=False,
+        server_default="CREATED"
+    )
 
     ordered_at = Column(
         TIMESTAMP(timezone=True),
