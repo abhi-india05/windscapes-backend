@@ -16,6 +16,9 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=401, detail="Invalid username")
 
+    if payload.role and user.role != payload.role:
+        raise HTTPException(status_code=401, detail=f"User is not a {payload.role}")
+
     if not verify_password(payload.user_password, user.user_password):
         raise HTTPException(status_code=401, detail="Invalid password")
 

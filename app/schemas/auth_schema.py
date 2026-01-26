@@ -16,6 +16,7 @@ class RegisterRequest(BaseModel):
 class LoginRequest(BaseModel):
     user_username: str
     user_password: str
+    role: str = "employee"
 
 class TokenResponse(BaseModel):
     access_token: str

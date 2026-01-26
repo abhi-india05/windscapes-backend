@@ -7,6 +7,7 @@ from app.api.v1.routes.order_read_routes import router as order_read_router
 from app.api.v1.routes.product_read_routes import router as product_read_router
 from app.api.v1.routes.nursery_routes import router as nursery_router
 from app.api.v1.routes.order_status_routes import router as order_status_router
+from app.api.v1.routes.scan_routes import router as scan_router
 
 api_router = APIRouter()
 
@@ -19,5 +20,6 @@ api_router.include_router(order_router, prefix="/orders", tags=["Orders Write"])
 api_router.include_router(order_read_router, prefix="/orders", tags=["Orders Read"])
 
 api_router.include_router(order_status_router, prefix="/orders", tags=["Order Status"])
+api_router.include_router(scan_router, prefix="/scan", tags=["Employee Scan"])
 
 api_router.include_router(nursery_router, prefix="/nursery", tags=["Nursery"])
